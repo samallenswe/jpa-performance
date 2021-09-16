@@ -1,15 +1,13 @@
-package com.github.saipradyu.performance;
+package com.github.saipradyu.performance.runners;
 
 import static com.github.saipradyu.performance.utils.Utils.TEST_SIZE;
 
 import com.github.saipradyu.performance.domain.Person;
-import com.github.saipradyu.performance.domain.rpsy.PersonRepository;
 import com.github.saipradyu.performance.utils.Utils;
 import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -17,20 +15,16 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Order(2)
+@Order(3)
 @RequiredArgsConstructor
 @Component
-public class LevelOneCacheRead implements CommandLineRunner {
-
-  @NonNull
-  private PersonRepository personRepository;
+public class CacheRead implements CommandLineRunner {
 
   @PersistenceContext(type = PersistenceContextType.EXTENDED)
   private EntityManager entityManager;
 
   @Override
   public void run(String... args) throws Exception {
-    personRepository.deleteAll();
     saveToPersistenceContext();
     long readStart = System.nanoTime();
     readFromLevelOneCache();
@@ -40,17 +34,16 @@ public class LevelOneCacheRead implements CommandLineRunner {
   }
 
   public void saveToPersistenceContext() {
-    for (int i = 0; i < TEST_SIZE; i++) {
+    for (int i = TEST_SIZE; i < 2 * TEST_SIZE; i++) {
       Person person = Utils.createRandomPerson(i+1);
       entityManager.persist(person);
     }
   }
 
   public void readFromLevelOneCache() {
-    for (int i = 1; i <= 50; i++) {
+    for (int i = TEST_SIZE; i <= TEST_SIZE + 50; i++) {
       Person person = entityManager.find(Person.class, (long) i);
       log.info("Found person " + i + " with " + person.toString());
     }
   }
-
 }
