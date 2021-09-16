@@ -5,6 +5,7 @@ import com.github.saipradyu.performance.domain.Person;
 public class Utils {
   public static final int BATCH_SIZE = 5;
   public static final int TEST_SIZE = 500;
+  public static final int POOL_SIZE = 5;
 
   public static Person createRandomPerson(int i) {
     Person person = new Person();
