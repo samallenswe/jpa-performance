@@ -41,7 +41,7 @@ public class CacheRead implements CommandLineRunner {
   }
 
   public void readFromLevelOneCache() {
-    for (int i = TEST_SIZE; i <= TEST_SIZE + 50; i++) {
+    for (int i = TEST_SIZE + 1; i <= TEST_SIZE + 50; i++) {
       Person person = entityManager.find(Person.class, (long) i);
       log.info("Found person " + i + " with " + person.toString());
     }
